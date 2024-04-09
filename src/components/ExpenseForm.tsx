@@ -5,6 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import 'react-date-picker/dist/DatePicker.css';
 import { DraftExpense, Value } from '../types/index';
 import { ErrorMessage } from "./ErrorMessage";
+import { useBudget } from "../hooks/useBudget";
 
 export const ExpenseForm = () => {
 
@@ -14,8 +15,8 @@ export const ExpenseForm = () => {
         category: '',
         date: new Date(),
     });
-
     const [error, setError] = useState('');
+    const { dispatch } = useBudget();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -42,7 +43,11 @@ export const ExpenseForm = () => {
         // Validar
         if (Object.values(expense).includes('')) {
             setError('Todos los campos son obligatorios');
+            return;
         }
+
+        // Agregar nuevo gasto
+        dispatch({ type: 'add-expense', payload: { expense } });
     }
 
     return (
